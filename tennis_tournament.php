@@ -18,12 +18,12 @@
 
 //----------------------------------------------------------------------------------------------------------------------DECLARE PLAYERS ARRAY
 $players = [];
-$surfaces = [
+const SURFACES = [
     'lawn',
     'clay',
     'hard'
 ];
-$weather = [
+const WEATHERS = [
     'rain',
     'dry',
     'snow',
@@ -50,6 +50,7 @@ if ($result) {
 
 //Tournament function:
 
+
 //take in players
 //take two random players
 //decide winner
@@ -58,25 +59,51 @@ if ($result) {
 //reassign players as winners
 //repeat
 
-function playerScore($playerArr, $surface, $weather) {
-    $score = $playerArr[$surface] * $playerArr[$weather];
-}
-function randSurf(&$arr) {
-    shuffle($arr);
-    return array_pop($arr);
+function winner($p1, $p2) {
+    $rand_w = WEATHERS[ rand(0, count(WEATHERS)-1) ];
+    $rand_s = SURFACES[ rand(0, count(SURFACES)-1) ];
+    $p1score = $p1[$rand_w] * $p1[$rand_s];
+    $p2score = $p2[$rand_w] * $p2[$rand_s];
+    if ($p1score > $p2score) {
+        return $p1;
+    } else {
+        return $p2;
+    }
 }
 function game($arr)
 {
+    global $players;
     shuffle($arr);
-    $player1 = array_pop($arr);
-    $player2 = array_pop($arr);
-
-    var_dump($player1);
-    echo '<br>';
-    var_dump($player2);
+    while (count($arr) > 0) {
+        $player1 = array_pop($arr);
+        $player2 = array_pop($arr);
+        $winners[] = winner($player1, $player2);
+    }
+    $players = $winners;
 }
-var_dump($players);
-echo '<br>';
+
+function roundWinners($arr) {
+    foreach ($arr as $player) {
+        echo $player['name'] . ' ';
+    }
+}
+
 game($players);
-echo '<br>';
-var_dump($players);
+echo 'Round 1 winners:<br>';
+roundWinners($players);
+echo '<br><br>';
+
+game($players);
+echo 'Round 2 winners:<br>';
+roundWinners($players);
+echo '<br><br>';
+
+game($players);
+echo 'Round 3 winners:<br>';
+roundWinners($players);
+echo '<br><br>';
+
+game($players);
+echo 'Tournament winner:<br>';
+roundWinners($players);
+echo '<br><br>';
