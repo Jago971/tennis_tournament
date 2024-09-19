@@ -1,21 +1,4 @@
 <?php
-//Tennis tournament
-
-//NEEDS:
-//16 players
-//each player:
-//
-//    name - name
-//    surface - [lawn, clay, hard]
-//    weather - [rain, dry, snow, sunny]
-
-//To do list:
-
-//DB of players and info XXX
-//connect DB XXX
-//extract player data as array XXX
-
-
 //----------------------------------------------------------------------------------------------------------------------DECLARE PLAYERS ARRAY
 $players = [];
 const SURFACES = [
@@ -47,17 +30,6 @@ if ($result) {
 } else {
     echo 'not working';
 }
-
-//Tournament function:
-
-
-//take in players
-//take two random players
-//decide winner
-//move winner to winners, move loser to losers
-//repeat until players is empty
-//reassign players as winners
-//repeat
 
 function winner($p1, $p2) {
     $rand_w = WEATHERS[ rand(0, count(WEATHERS)-1) ];
@@ -107,3 +79,12 @@ game($players);
 echo 'Tournament winner:<br>';
 roundWinners($players);
 echo '<br><br>';
+foreach ($players as $player) {
+    $winner = $player['name'] . ' ';
+}
+
+$query = $db->prepare("UPDATE `players` SET `trophies` = 1 WHERE `name` = :winner");
+
+$result = $query->execute([
+    'winner' => $winner
+]);
