@@ -31,7 +31,7 @@ if ($result) {
     echo 'not working';
 }
 
-function winner($p1, $p2) {
+function winner($p1, $p2) {//------------------------------------------------------------------Takes in 2 player, decides random weather and surface, returns winner
     $rand_w = WEATHERS[ rand(0, count(WEATHERS)-1) ];
     $rand_s = SURFACES[ rand(0, count(SURFACES)-1) ];
     $p1score = $p1[$rand_w] * $p1[$rand_s];
@@ -42,7 +42,7 @@ function winner($p1, $p2) {
         return $p2;
     }
 }
-function game($arr)
+function game($arr)//---takes in $players array, takes 2 players out per iteration and moves winner into winners array. Iterates whilst players are left in players array. reassigns winners to players
 {
     global $players;
     shuffle($arr);
@@ -80,11 +80,21 @@ echo 'Tournament winner:<br>';
 roundWinners($players);
 echo '<br><br>';
 foreach ($players as $player) {
-    $winner = $player['name'] . ' ';
+    $winner = $player['name'];
 }
 
-$query = $db->prepare("UPDATE `players` SET `trophies` = 1 WHERE `name` = :winner");
-
+$query = $db->prepare("SELECT `trophies` FROM `players` WHERE `name` = :winner;");
 $result = $query->execute([
     'winner' => $winner
+]);
+if ($result) {
+    $playerTrophies = $query->fetch();//------------------------------------------------------------------------------------REASSIGN PLAYERS ARRAY
+} else {
+    echo 'not working';
+}
+
+$query = $db->prepare("UPDATE `players` SET `trophies` = :trophies WHERE `name` = :winner;");
+$result = $query->execute([
+    'winner' => $winner,
+    'trophies' => ($playerTrophies['trophies'] + 1)
 ]);
